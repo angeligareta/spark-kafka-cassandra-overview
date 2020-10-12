@@ -35,7 +35,7 @@ After all the services are correctly configured, we subscribe to the topic <topi
 
 Several transformations are applied to the stream:
 1. Transform the received raw data with the format "String,Int" into pairs <key, value>, which we can use to aggregate by key. If the input data does not have this format, the message will be omitted.
-2. Use the mapWithState method that allows us to have a stateful transformation of the stream data accessible from every RDD. In this method, we use a HashMap[String, Double] used to store the words and the current average they have. Inside the map function, we are continuously calculating the average between the old key (if it exists) and the new one and with this new value, we both update the state and return it.
+2. Use the mapWithState method that allows us to have a stateful transformation of the stream data accessible from every RDD. In this method, we use a HashMap[String, (Double, Double)] used to store the words and the current count and sum they have. Inside the map function, we are continuously calculating the average between the old key (if it exists) and the new one and with this new value, we both update the state and return it. __Note:__ We calculate the average from the count and sum despite these values could exceed Double size, as it is for academic purpose. The solution could be to reset the count and sum when it exceeds and consider initial value the last average.
 3. Write the returned values of the map function to the Cassandra table within its keyspace.
 
 Finally, we start the spark streaming job and we continue the execution until an error occurs or the program is stopped by the user. When this happens, it is important to finalize the Cassandra session.
