@@ -18,7 +18,7 @@ object KafkaSpark {
 
   def main(args: Array[String]) {
     if (args.length != 3) {
-      throw new Exception("Required arguments must be received to start the program: (<topic_name>)")
+      throw new Exception("Required arguments must be received to start the program: (<keyspace_name>, <table_name>, <topic_name>)")
     }
 
     /** INPUT CONFIGURATION */
@@ -40,7 +40,7 @@ object KafkaSpark {
     /** SPARK STREAMING INITIALIZATION */
     // Initialize StreamingContext object => Main entry point for Spark Streaming functionality.
     val sparkConf = new SparkConf().setMaster("local[*]").setAppName("KafkaSpark")
-    val ssc = new StreamingContext(sparkConf, Seconds(5))
+    val ssc = new StreamingContext(sparkConf, Seconds(3))
     // Set checkpoint directory (necessary to work)
     ssc.checkpoint("tmp")
 
@@ -71,17 +71,24 @@ object KafkaSpark {
       .filter(pair => pair != null)
 
     // Mapping function that continuously calculates the average between values of the same key and store them in state
-    val avgMappingFunction = (key: String, value: Option[Double], state: State[HashMap[String, Double]]) => {
+    // The first value in state is the count and the second the sum
+    val avgMappingFunction = (key: String, value: Option[Double], state: State[HashMap[String, (Double, Double)]]) => {
       // If value is not empty (timeout) | Otherwise state should not be updated
       if (value.isDefined) {
         // If state is new, initialize with empty hash map
         if (!state.exists()) {
-          state.update(new HashMap[String, Double]())
+          state.update(new HashMap[String, (Double, Double)]())
         }
+        val currentKeyState: (Double, Double) = state.get.getOrElse(key, (0, 0))
+
         // If key was not present in state, average would equal value
-        val average = (value.get + state.get.getOrElse(key, value.get)) / 2
+        val count = currentKeyState._1 + 1
+        val sum = value.get + currentKeyState._2
+        val average = sum / count
+
         // Update local state
-        state.update(state.get + (key -> average))
+        state.update(state.get + (key -> (count, sum)))
+
         // Return current average for that key
         (key, average)
       }
