@@ -18,6 +18,9 @@ object Generator {
   }
 
   def main(args: Array[String]) {
+    if (args.length != 1) {
+      throw new Exception("Required arguments must be received to start the program: (<topic_name>)")
+    }
     val topicName = args(0)
 
     val props = new Properties()

@@ -17,26 +17,30 @@ import scala.collection.immutable.HashMap
 object KafkaSpark {
 
   def main(args: Array[String]) {
+    if (args.length != 3) {
+      throw new Exception("Required arguments must be received to start the program: (<topic_name>)")
+    }
+
     /** INPUT CONFIGURATION */
     // Receive kafka key space and topic name by program arguments
     val keyspaceName = args(0)
-    val topicName = args(1)
+    val tableName = args(1)
+    val topicName = args(2)
 
     /** CASSANDRA INITIALIZATION */
-    // Initialize Cassandra cluster and session
+    // Initialize Cassandra cluster and session. Usually it is better to specify more than one contact point just in case that single contact point is unavailable.
     val cluster = Cluster.builder().addContactPoint("127.0.0.1").build()
     val session = cluster.connect()
 
     // Build a key space using simple strategy with only one replica and create table
     // where this program will store the result of the streaming computation
     session.execute(s"CREATE KEYSPACE IF NOT EXISTS ${keyspaceName} WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 1 };")
-    session.execute(s"CREATE TABLE IF NOT EXISTS ${keyspaceName}.${topicName} (word text PRIMARY KEY, count float);")
+    session.execute(s"CREATE TABLE IF NOT EXISTS ${keyspaceName}.${tableName} (word text PRIMARY KEY, count float);")
 
     /** SPARK STREAMING INITIALIZATION */
     // Initialize StreamingContext object => Main entry point for Spark Streaming functionality.
     val sparkConf = new SparkConf().setMaster("local[*]").setAppName("KafkaSpark")
     val ssc = new StreamingContext(sparkConf, Seconds(5))
-
     // Set checkpoint directory (necessary to work)
     ssc.checkpoint("tmp")
 
@@ -89,7 +93,7 @@ object KafkaSpark {
     val topicStreamPairsAvg = topicStreamPairs.mapWithState(StateSpec.function(avgMappingFunction)).filter(pair => pair != null)
 
     // Save result to cassandra
-    topicStreamPairsAvg.saveToCassandra(keyspaceName, topicName, SomeColumns("word", "count"))
+    topicStreamPairsAvg.saveToCassandra(keyspaceName, tableName, SomeColumns("word", "count"))
 
     // Start streaming job
     ssc.start()
