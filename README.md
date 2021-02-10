@@ -2,8 +2,9 @@
 <h4 align="center">Assignment for second lab of the Data-Intensive Computing course of the EIT Digital data science master at <a href="https://www.kth.se/en">KTH</a></h4>
 
 <p align="center">
-  <img alt="KTH" src="https://img.shields.io/badge/EIT%20Digital-KTH-%231954a6?style=flat-square">
-  <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/angeligareta/spark-kafka-cassandra-overview?style=flat-square">
+  <img alt="KTH" src="https://img.shields.io/badge/EIT%20Digital-KTH-%231954a6?style=flat-square" />  
+  <img alt="License" src="https://img.shields.io/github/license/angeligareta/spark-kafka-cassandra-overview?style=flat-square" />
+  <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/angeligareta/spark-kafka-cassandra-overview?style=flat-square" />
 </p>
 
 The purpose of this project is to develop a Spark Streaming application that reads Apache Kafka's data stream, calculates some results based on the data, and continually stores the result in Cassandra's data warehouse. The input data is <key, value> pairs in the form of <String, Int>, and the goal is to calculate the average value of each key and continuously update it, while new pairs arrive. Furthermore, there are extra excercises (guided by the professor) in the [notebooks](notebooks) folder.
