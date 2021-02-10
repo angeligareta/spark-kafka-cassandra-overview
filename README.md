@@ -1,4 +1,4 @@
-# Kafka, Spark and Cassandra Integration
+# Spark, Kafka, and Cassandra Integration
 The purpose of this project is to develop a Spark Streaming application that reads Apache Kafka's data stream, calculates some results based on the data, and continually stores the result in Cassandra's data warehouse. The input data is <key, value> pairs in the form of <String, Int>, and the goal is to calculate the average value of each key and continuously update it, while new pairs arrive.
 
 ## Initialization
@@ -47,7 +47,8 @@ sbt "run <keyspace_name> <table_name> <topic_name>"
 ```
 
 ## Outcome
-After runnning the program and scanning the Cassandra <table_name> in the <keyspace_name> the results should be similar as:
+After runnning the program and scanning the Cassandra <table_name> in the <keyspace_name> the results should be similar to:
+
 ![Results](output.jpeg)
 
 ## Authors
