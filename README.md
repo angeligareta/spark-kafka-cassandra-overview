@@ -6,7 +6,7 @@
   <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/angeligareta/spark-kafka-cassandra-overview?style=flat-square">
 </p>
 
-The purpose of this project is to develop a Spark Streaming application that reads Apache Kafka's data stream, calculates some results based on the data, and continually stores the result in Cassandra's data warehouse. The input data is <key, value> pairs in the form of <String, Int>, and the goal is to calculate the average value of each key and continuously update it, while new pairs arrive.
+The purpose of this project is to develop a Spark Streaming application that reads Apache Kafka's data stream, calculates some results based on the data, and continually stores the result in Cassandra's data warehouse. The input data is <key, value> pairs in the form of <String, Int>, and the goal is to calculate the average value of each key and continuously update it, while new pairs arrive. Furthermore, there are extra excercises (guided by the professor) in the [notebooks](notebooks) folder.
 
 ## Initialization
 ### Kafka
