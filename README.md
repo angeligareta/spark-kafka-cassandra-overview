@@ -56,7 +56,7 @@ sbt "run <keyspace_name> <table_name> <topic_name>"
 ## Outcome
 After runnning the program and scanning the Cassandra <table_name> in the <keyspace_name> the results should be similar to:
 
-![Results](output.jpeg)
+![Results](project/output.jpeg)
 
 ## Authors
 - Serghei Socolovschi [serghei@kth.se](mailto:serghei@kth.se)
